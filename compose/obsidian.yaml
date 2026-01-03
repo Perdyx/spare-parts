@@ -1,3 +1,5 @@
+# Hosts Obsidian in a Selkies container
+
 services:
   obsidian:
     image: lscr.io/linuxserver/obsidian:latest
