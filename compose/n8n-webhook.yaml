@@ -1,4 +1,4 @@
-# Creates an n8n server that uses Ngrok as a proxy for incoming webhook traffic
+# Hosts n8n server using Ngrok as a proxy for incoming webhook traffic
 
 volumes:
   n8n_data:

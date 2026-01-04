@@ -1,0 +1,43 @@
+# Creates and runs Open WebUI with Ollama backend
+
+volumes:
+  ollama_data:
+  owui_data:
+
+services:
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    expose:
+      - 11434/tcp
+    ports:
+      - 11434:11434/tcp
+    healthcheck:
+      test: ollama --version || exit 1
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+    # Uncomment the following deploy block to enable GPU support (if the host has a compatible NVIDIA GPU and the NVIDIA Container Toolkit is installed)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all 
+    #           capabilities: [gpu]
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    depends_on:
+      - ollama
+    ports:
+      - 3000:8080/tcp
+    volumes:
+      - owui_data:/app/backend/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
